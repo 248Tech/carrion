@@ -1,0 +1,41 @@
+# mg7d agent config (Phase 0-3)
+instances:
+  - name: default
+    log_path: ./game.log
+    telnet:
+      host: 127.0.0.1
+      port: 8081
+      password: ""
+      rate_limit_per_sec: 2.0
+    policy:
+      fps_guard:
+        enabled: true
+        threshold_low: 25
+        threshold_restore: 40
+        require_low_samples: 3
+        sample_window_samples: 60
+        restore_stable_seconds: 120
+        cooldown_seconds: 60
+        delta_spike_threshold: 15
+        spike_window_seconds: 60
+        throttle_profile: default
+    actions:
+      baseline:
+        MaxSpawnedZombies: "50"
+      throttle_profiles:
+        default:
+          steps:
+            - pref: "MaxSpawnedZombies"
+              value: "30"
+            - pref: "MaxSpawnedZombies"
+              value: "20"
+            - pref: "MaxSpawnedZombies"
+              value: "10"
+
+api:
+  listen: 127.0.0.1:9090
+  auth_token: ""
+
+metrics:
+  enable: true
+  path: /metrics

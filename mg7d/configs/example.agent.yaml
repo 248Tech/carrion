@@ -1,0 +1,46 @@
+# mg7d agent — example config (Phase 0–3)
+# Copy to e.g. /etc/mg7d/agent.yaml and adjust paths and telnet to match your server.
+#
+# The agent uses the first instance only in Phase 0–3. Multi-instance config is
+# valid for future use; metrics use instance="<name>" for labeling.
+
+instances:
+  - name: default
+    log_path: /var/log/7dtd/output_log.txt   # or your 7DTD log path
+    telnet:
+      host: 127.0.0.1
+      port: 8081
+      password: ""                             # set if telnet auth is enabled
+      rate_limit_per_sec: 2.0                  # max commands per second (token bucket)
+    policy:
+      fps_guard:
+        enabled: true
+        threshold_low: 25                     # FPS below this triggers throttle
+        threshold_restore: 40                  # FPS above this (sustained) allows restore
+        require_low_samples: 3                 # low samples in window to trigger
+        sample_window_samples: 60              # FPS ring buffer size
+        restore_stable_seconds: 120           # seconds above threshold_restore before restore
+        cooldown_seconds: 60                  # min seconds between throttle steps
+        delta_spike_threshold: 15             # reserved (spike detection)
+        spike_window_seconds: 60
+        throttle_profile: default
+    actions:
+      baseline:                               # pref values for RestoreBaseline
+        MaxSpawnedZombies: "50"
+      throttle_profiles:
+        default:
+          steps:
+            - pref: MaxSpawnedZombies
+              value: "30"
+            - pref: MaxSpawnedZombies
+              value: "20"
+            - pref: MaxSpawnedZombies
+              value: "10"
+
+api:
+  listen: 127.0.0.1:9090                      # HTTP server for /metrics and /healthz
+  auth_token: ""                               # reserved; not enforced in Phase 0–3
+
+metrics:
+  enable: true
+  path: /metrics

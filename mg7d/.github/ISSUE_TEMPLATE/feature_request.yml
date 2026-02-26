@@ -1,0 +1,40 @@
+name: Feature request
+description: Suggest a new feature or improvement (e.g. Phase 4+ or small additive change).
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Phase 0–3 is stable; new features should not break invariants. See [docs/ROADMAP.md](https://github.com/mg7d/mg7d/blob/main/docs/ROADMAP.md) for planned phases.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Short description of the feature or improvement.
+      placeholder: What do you want? Why?
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      description: Roughly where does this fit?
+      options:
+        - Phase 4+ (multi-instance, ctl, etc.)
+        - Config / ops (new options, systemd, packaging)
+        - Observability (metrics, health, audit)
+        - Policy / actions (new policy or action type)
+        - Other
+  - type: textarea
+    id: invariants
+    attributes:
+      label: Invariants
+      description: How does this respect the five invariants (no telnet spam, bounded RAM, reversible changes, hysteresis/cooldown, audit)?
+      placeholder: e.g. "Adds a new gauge only; no new unbounded state."
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Workarounds or alternatives you've considered.
+      optional: true

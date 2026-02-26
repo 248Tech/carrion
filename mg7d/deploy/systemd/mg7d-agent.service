@@ -1,0 +1,41 @@
+# mg7d agent — systemd unit (Phase 0–3)
+# Install: cp deploy/systemd/mg7d-agent.service /etc/systemd/system/
+#          systemctl daemon-reload && systemctl enable --now mg7d-agent
+#
+# Adjust paths: ExecStart (binary and config path), User, and WorkingDirectory.
+
+[Unit]
+Description=mg7d 7DTD observability and autopilot agent
+Documentation=https://github.com/mg7d/mg7d
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/mg7d-agent /etc/mg7d/agent.yaml
+# Optional: run as dedicated user (must be able to read log_path and config)
+# User=mg7d
+# Group=mg7d
+# WorkingDirectory=/var/lib/mg7d
+
+Restart=on-failure
+RestartSec=5
+
+# Hardening (optional; uncomment and adjust as needed)
+# NoNewPrivileges=true
+# PrivateTmp=true
+# ProtectSystem=strict
+# ProtectHome=true
+# ReadWritePaths=/var/log/7dtd
+# ReadOnlyPaths=/etc/mg7d
+# InaccessiblePaths=/root
+# CapabilityBoundingSet=
+# LockPersonality=true
+# RestrictRealtime=true
+# RestrictSUIDSGID=true
+# RestrictNamespaces=true
+# RestrictAddressFamilies=AF_INET AF_INET6
+# SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target
